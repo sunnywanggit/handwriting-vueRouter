@@ -63,14 +63,18 @@ class MyRouter {
 MyRouter.install = function (Vue,opts) {
     //每个组件都有 this.$router 和 this.$route 属性
     //既然每个组件上都有这两个属性，那我们就使用混入来解决这个问题
+
+    //在所有组件中获取同一个路由的实例
+
+
     Vue.mixin({
         beforeCreate(){ //混合方法，会把这个方法和组件中的方法合成一个
-            Object.defineProperties(this.'$router',{
+            Object.defineProperty(this,'$router',{ //$router 就是 Router 的实例 ,就是 Vue Router 的实例
                 get(){
                     return {}
                 }
             })
-            Object.defineProperties(this.'$route',{
+            Object.defineProperty(this,'$route',{
                 get(){
                     return {}
                 }
@@ -89,7 +93,7 @@ MyRouter.install = function (Vue,opts) {
     Vue.component('router-view',{
         render(h){
             //通过 h 渲染一个 a 标签，
-            return h('a',{},'首页')
+            return <h1>首页</h1>
         }
     })
 }
