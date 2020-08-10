@@ -60,7 +60,15 @@ class MyRouter {
 
 
 }
-MyRouter.install = function (Vue) {
+MyRouter.install = function (Vue,opts) {
+    //每个组件都有 this.$router 和 this.$route 属性
+    //既然每个组件上都有这两个属性，那我们就使用混入来解决这个问题
+    Vue.mixin({
+        beforeCreate(){ //混合方法，会把这个方法和组件中的方法合成一个
+            console.log(this.$options.name);
+        }
+    })
+
     console.log(Vue,'install')
 }
 
