@@ -5,6 +5,14 @@
 最后，我们还需要 Vue.use 帮我们注册插件,使用 Vue.use 就会调用 install 方法
  */
 
+class HistoryRoute {
+    constructor(props) {
+        this.current = null;
+    }
+
+
+}
+
 class MyRouter {
     constructor(options) {
         //默认是hash 模式
@@ -12,7 +20,28 @@ class MyRouter {
         this.routes = options.routes || [];
         //传递过来的是一个路由表， 为了方便后期的处理，我们需要对这个数组做一个改造：{'/home':Home,'/main':Main}
         this.routesMap = this.createMap(this.routes)
-        console.log(this.routesMap);
+        //路由中需要存放当前的路径 需要状态,之所以把它做成一个类，是为了方便我们后期进行扩展
+        this.history = new HistoryRoute;
+        this.init()//开始初始化操作
+
+    }
+    init(){
+        //首先需要判断路由使用的是什么模式
+        if(this.mode === 'hash'){
+            //先判断用户打开时有没有 hash，如果再有就跳转到 #/
+            location.hash ? '' : location.hash = '/'
+            //如果加载的时候就有hash值，我们就改变当前的url
+            window.addEventListener('load',()=>{
+                this.history.current = location.hash.slice(1);
+            })
+            //监听hash的变化
+            window.addEventListener('hashchange',()=>{
+                this.history.current = location.hash.split(1)
+            })
+        }else{
+
+        }
+
     }
     createMap(routes){
         return routes.reduce((memo,current)=>{
