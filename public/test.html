@@ -9,18 +9,34 @@
 </head>
 <body>
 <!--hash history-->
-<a href="#/home">home</a>
-<a href="#/about">about</a>
+<!--<a href="#/home">home</a>-->
+<!--<a href="#/about">about</a>-->
+<!--<html id="html"></html>-->
+
+<a onclick="go('/home')">home</a>
+<a onclick="go('/about')">about</a>
 <html id="html"></html>
 
 </body>
 <script>
-    window.addEventListener('load',()=>{
-        html.innerHTML = location.hash.slice(1)
-    })
+    // window.addEventListener('load',()=>{
+    //     html.innerHTML = location.hash.slice(1)
+    // })
+    //
+    // window.addEventListener('hashchange',()=>{
+    //     html.innerHTML = location.hash.slice(1)
+    // })
 
-    window.addEventListener('hashchange',()=>{
-        html.innerHTML = location.hash.slice(1)
+    //history api 可能会导致 404 的发生
+    function go(pathname){
+        history.pushState({},null,pathname);
+        html.innerHTML = pathname;
+    }
+
+    //监听浏览器前进和后退的事件
+    window.addEventListener('popstate',()=>{
+        //只要浏览器前进或者是后退了，我们就调用过方法，同步改变 url 路径
+        go(location.pathname)
     })
 </script>
 </html>
