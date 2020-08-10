@@ -6,6 +6,20 @@
  */
 
 class MyRouter {
+    constructor(options) {
+        //默认是hash 模式
+        this.mode = options.mode || hash;
+        this.routes = options.routes || [];
+        //传递过来的是一个路由表， 为了方便后期的处理，我们需要对这个数组做一个改造：{'/home':Home,'/main':Main}
+        this.routesMap = this.createMap(this.routes)
+        console.log(this.routesMap);
+    }
+    createMap(routes){
+        return routes.reduce((memo,current)=>{
+            memo[current.path] = current.component;
+            return memo;
+        },{})//初始化 memo 为空对象
+    }
 
 
 }
