@@ -65,11 +65,33 @@ MyRouter.install = function (Vue,opts) {
     //既然每个组件上都有这两个属性，那我们就使用混入来解决这个问题
     Vue.mixin({
         beforeCreate(){ //混合方法，会把这个方法和组件中的方法合成一个
-            console.log(this.$options.name);
+            Object.defineProperties(this.'$router',{
+                get(){
+                    return {}
+                }
+            })
+            Object.defineProperties(this.'$route',{
+                get(){
+                    return {}
+                }
+            })
         }
     })
 
-    console.log(Vue,'install')
+    //注册全局组件
+    Vue.component('router-link',{
+        //h === createElement
+        render(h){
+            //通过 h 渲染一个 a 标签，
+            return h('a',{},'首页')
+        }
+    })
+    Vue.component('router-view',{
+        render(h){
+            //通过 h 渲染一个 a 标签，
+            return h('a',{},'首页')
+        }
+    })
 }
 
 export default MyRouter;
