@@ -39,6 +39,14 @@ class MyRouter {
                 this.history.current = location.hash.split(1)
             })
         }else{
+            location.pathname ? '' : location.pathname ='/';
+            window.addEventListener('load',()=>{
+                this.history.current = location.hash.slice(1);
+            })
+            window.addEventListener('popstate',()=>{
+                this.history.current = location.hash.slice(1);
+            })
+
 
         }
 
