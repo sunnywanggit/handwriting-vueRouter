@@ -100,8 +100,10 @@ MyRouter.install = function (Vue, opts) {
                 }
             });
             Object.defineProperty(this, '$route', {
+                //$route 里面就应该有 curent 属性
                 get() {
-                    return {};
+                    //当前路由所在的状态
+                    current:this._root._router.history.current;
                 }
             });
         }
@@ -116,11 +118,14 @@ MyRouter.install = function (Vue, opts) {
         }
     });
     Vue.component('router-view', {
+        //根据当前的 current 去路由表中获取相应的组件 {'/home':Home}
         render(h) {
+            //render 里面的  this  是proxy
+            // console.log('this',this);
+            //获取当前路由
+            let current = this._self._root._router.history.current;
             //通过 h 渲染一个 a 标签，
-            return;
-        <
-            h1 > 首页 < /h1>;;
+            return <h1 > 首页 < /h1>;
         }
     });
 };
