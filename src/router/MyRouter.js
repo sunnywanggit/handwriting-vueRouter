@@ -35,7 +35,7 @@ class MyRouter {
             });
             //监听hash的变化
             window.addEventListener('hashchange', () => {
-                this.history.current = location.hash.split(1);
+                this.history.current = location.hash.slice(1);
             });
         } else {
             location.pathname ? '' : location.pathname = '/';
@@ -81,7 +81,11 @@ MyRouter.install = function (Vue, opts) {
         beforeCreate() { //mixin混合方法，会把这个方法和组件中的方法合成一个
             if (this.$options && this.$options.router) { //定位跟组件
                 this._root = this; //把当前实例挂载到 _root
-                this._router= this.$options.router;//把 router 挂载到 _router 上
+                this._router = this.$options.router;//把 router 挂载到 _router 上
+                //observe方法
+                //如果 history 中的 current 属性变化了，也会刷新试图
+                //this.xxx = this._router.history
+                Vue.util.defineReactive(this, 'xxx', this._router.history);
             } else {
                 //如果不是根节点，那么就是子或者孙子节点,Vue 组件的渲染顺序是 父->子->孙
                 this._root = this.$parent._root;
@@ -111,10 +115,24 @@ MyRouter.install = function (Vue, opts) {
 
     //注册全局组件
     Vue.component('router-link', {
+        //router-link 组件要接受一个 to 属性
+        props: {
+            to: String,
+            tag:String
+        },
+        methods:{
+            handleClick(){
+                //如果是 hash 怎么跳转，如果是 history 怎么跳转
+            }
+
+        },
         //h === createElement
         render(h) {
-            //通过 h 渲染一个 a 标签，
-            return h('a', {}, '首页');
+            let mode = this._self._root._router.mode;
+            let tag = this.tag;
+            //this.$slots.default 取得是插槽中的默认插槽
+            // return <tag on-click={this.handleClick} href={mode === 'hash' ? `#${this.to}` : this.to}>{this.$slots.default}</tag>
+            return <a  href={mode === 'hash' ? `#${this.to}` : this.to}>{this.$slots.default}</a>
         }
     });
     Vue.component('router-view', {
@@ -123,9 +141,15 @@ MyRouter.install = function (Vue, opts) {
             //render 里面的  this  是proxy
             // console.log('this',this);
             //获取当前路由
+            /*
+            如何将 current 变成动态的 current ，currnet  变化应该会影响视图的刷新
+            Vue 的时间绑定使用的是 Object.defineProperty ,当进行 set 的时候，就会刷新视图，所以我们可以在这里做文章
+             */
             let current = this._self._root._router.history.current;
-            //通过 h 渲染一个 a 标签，
-            return <h1 > 首页 < /h1>;
+            let routerMap = this._self._root._router.routesMap;
+            //根据路由表和对应的路径获取对应的组件，然后对组件进行渲染
+            return h(routerMap[current]);
+
         }
     });
 };
